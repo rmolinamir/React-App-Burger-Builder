@@ -1,0 +1,9 @@
+.Content {
+    margin-top: 72px;
+}
+
+.Footer {
+    margin-top: 16px;
+    position: static;
+    bottom: 0;
+}
