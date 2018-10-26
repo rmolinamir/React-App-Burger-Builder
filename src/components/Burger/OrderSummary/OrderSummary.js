@@ -3,14 +3,17 @@ import React from 'react';
 import Button from '../../UI/Button/Button.js'
 
 const orderSummary = (props) => {
-    const ingredientsSummary = Object.keys(props.ingredients)
+    let ingredientsSummary = null;
+    if (props.ingredients) {
+        ingredientsSummary = Object.keys(props.ingredients)
         .map(igKey => {
             return (
                 <li key={igKey}>
                     <span style={ {textTransform: "capitalize"} }>{igKey}</span>: {props.ingredients[igKey]}
                 </li>
             );
-        })
+        });
+    }
     return (
         <>
             <h3>Your Order</h3>
