@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-import Burger from '../../components/Burger/Burger.js';
-import BuildControls from '../../components/Burger/BuildControls/BuildControls.js';
-import Modal from '../../components/UI/Modal/Modal.js';
-import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary.js';
-import Spinner from '../../components/UI/Spinner/Spinner.js';
-import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler.js';
+import Burger from '../../components/Burger/Burger';
+import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
-import axios from '../../axios-orders.js';
+import axios from '../../axios-orders';
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -115,38 +115,17 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        this.setState({
-            loading: true,
-        });
-        // alert('You continue!');
-        const order = {
-            ingredients: this.state.ingredients,
-            // Recalculating price on server side is recommended to avoid theft
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Max',
-                address: {
-                    street: 'Teststreet 1',
-                    zip: '43151',
-                    country: 'USA',
-                },
-                email: 'test@test.tcom'
-            },
-            deliveryMethod: 'fastest'
+        const queryParams = [];
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
         }
-        axios.post('/orders.json', order)
-        .then(response => {
-            this.setState({
-                purchasing: false,
-                loading: false,
-            });
-        })
-        .catch(error => {
-            this.setState({
-                purchasing: false,
-                loading: false,
-            });
+        queryParams.push('price=' + this.state.totalPrice);
+        const queryString = queryParams.join('&');
+        this.props.history.push({
+            pathname: '/checkout/',
+            search: '?' + queryString
         });
+        // this.props.history.replace('/checkout')
     }
 
     render() {
