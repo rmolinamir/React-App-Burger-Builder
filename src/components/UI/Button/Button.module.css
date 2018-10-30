@@ -14,10 +14,16 @@
     line-height: 1.5;
     border-radius: .25rem;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: opacity 0.15s;
 }
 
-.Button:first-of-type {
+/* .Button:first-of-type {
     margin-left: auto;
+} */
+
+.Button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 .Success {
@@ -27,7 +33,7 @@
     border-color: #28a745;
 }
 
-.Success:hover {
+.Success:not([disabled]):hover {
     color: #fff;
     background-color: #28a745;
     border-color: #28a745;
@@ -40,7 +46,7 @@
     border-color: #dc3545;
 }
 
-.Danger:hover {
+.Danger:not([disabled]):hover {
     color: #fff;
     background-color: #dc3545;
     border-color: #dc3545;

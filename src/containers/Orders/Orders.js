@@ -28,7 +28,6 @@ class Orders extends Component {
         let orders;
         orders = <Spinner />;
         if (!this.state.loading) {
-            orders = [];
             orders = Object.entries(this.state.orders).map( (order) => {
                 let orderId = order[0];
                 let orderProps = order[1];
