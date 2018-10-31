@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import axios from '../../../axios-orders';
 
 import Input from '../../../components/UI/Input/Input';
@@ -157,7 +158,7 @@ class ContactData extends PureComponent {
         const order = {
             ingredients: this.props.ingredients,
             // Recalculating price on server side is recommended to avoid theft
-            price: Number(this.props.price).toFixed(2),
+            price: Number(this.props.totalPrice).toFixed(2),
             orderData: formData
         }
         axios.post('/orders.json', order)
@@ -178,9 +179,6 @@ class ContactData extends PureComponent {
     }
 
     render () {
-        console.log(this.props)
-        console.log('ingredients: ')
-        console.log(this.props.ingredients)
         const formElementsArray = Object.entries(this.state.orderForm);
         let form = (
             <form onSubmit={this.orderHandler}>
@@ -211,4 +209,11 @@ class ContactData extends PureComponent {
     }
 }
 
-export default ContactData;
+const mapStateToProps = state => {
+    return {
+        ingredients: state.ingredientsReducer.ingredients,
+        totalPrice: state.ingredientsReducer.totalPrice
+    }
+}
+
+export default connect(mapStateToProps)(ContactData);
