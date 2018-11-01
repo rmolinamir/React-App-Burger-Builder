@@ -6,13 +6,9 @@ import Backdrop from '../Backdrop/Backdrop.js'
 
 class Modal extends Component {
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
-    }
-
-    componentWillUpdate() {
-        console.log('[Modal.js] componentWillUpdate');
-    }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
+    // }
 
     render() {
         return (
@@ -33,4 +29,4 @@ class Modal extends Component {
     }
 };
 
-export default Modal;
+export default React.memo(Modal);

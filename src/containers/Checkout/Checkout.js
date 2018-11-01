@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/UI/Order/CheckoutSummary/CheckoutSummary';
@@ -13,7 +13,7 @@ class Checkout extends Component {
     }
 
     checkoutContinuedHandler = () => {
-        this.props.history.replace(this.props.match.url + "contact-data")
+        this.props.history.replace(this.props.match.url + "/contact-data")
     }
 
     // componentWillMount () {
@@ -31,17 +31,24 @@ class Checkout extends Component {
     // }
 
     render() {
+        let summary = <Redirect to="/" />
+        if (this.props.ingredients) {
+            // const purchaseRedirect = !this.props.purchasing ? <Redirect to="/" /> : null;
+            summary = (
+                <>  
+                    {/* {purchaseRedirect} */}
+                    <CheckoutSummary 
+                        ingredients={this.props.ingredients}
+                        checkoutCancelled={this.checkoutCancelledHandler}
+                        checkoutContinued={this.checkoutContinuedHandler} />
+                    <Route 
+                        path={this.props.match.path + "/contact-data"}
+                        component={ContactData} />
+                </>
+            )
+        }
         return (
-            <>
-                <CheckoutSummary 
-                    ingredients={this.props.ingredients}
-                    checkoutCancelled={this.checkoutCancelledHandler}
-                    checkoutContinued={this.checkoutContinuedHandler} />
-                <Route 
-                    path={this.props.match.path + "/contact-data"} 
-                    // component={ContactData} />
-                    component={ContactData} />
-            </>
+            summary
         );
     }
 }
@@ -49,8 +56,9 @@ class Checkout extends Component {
 const mapStateToProps = state => {
     return {
         ingredients: state.ingredientsReducer.ingredients,
-        totalPrice: state.ingredientsReducer.totalPrice
+        totalPrice: state.ingredientsReducer.totalPrice,
+        purchasing: state.contactDataReducer.purchasing
     }
 }
 
-export default connect(mapStateToProps)(Checkout);
+export default withRouter(connect(mapStateToProps)(Checkout));

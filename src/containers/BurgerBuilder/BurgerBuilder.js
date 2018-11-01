@@ -10,6 +10,8 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 import axios from '../../axios-orders';
 import { burgerBuilderCreators } from '../../store/actions/burgerBuilder';
+import { contactDataCreators } from '../../store/actions/contactData';
+import { authCreators } from '../../store/actions/auth';
 
 // const INGREDIENT_PRICES = {
 //     salad: 0.5,
@@ -115,9 +117,8 @@ class BurgerBuilder extends Component {
     // }
 
     purchaseHandler = () => {
-        const purchasingBool = !this.state.purchasing;
-        this.setState({
-            purchasing: purchasingBool
+        this.setState( prevState => {
+            return {purchasing: !prevState.purchasing}
         });
     }
 
@@ -128,11 +129,19 @@ class BurgerBuilder extends Component {
         // }
         // queryParams.push('price=' + this.props.totalPrice);
         // const queryString = queryParams.join('&');
+        this.props.onInitPurchase();
         this.props.history.push({
-            pathname: '/checkout/',
+            pathname: '/checkout',
             // search: '?' + queryString
         });
         // this.props.history.replace('/checkout')
+    }
+
+    signInRedirect = () => {
+        this.props.onSetAuthRedirectPath("/checkout");
+        this.props.history.push({
+            pathname: '/login'
+        });
     }
 
     render() {
@@ -147,12 +156,14 @@ class BurgerBuilder extends Component {
         if (this.props.ingredients) {
             burger = (<>
                         <Burger ingredients={this.props.ingredients}/>
-                        <BuildControls 
+                        <BuildControls
+                            isAuth={this.props.isAuthenticated}
                             ingredientAdded={this.props.onAddIngredientHandler}
                             ingredientRemoved={this.props.onRemoveIngredientHandler}
                             disabled={disabledInfo}
                             purchasable={this.updatedPurchaseState(this.props.ingredients)}
                             purchasing={this.purchaseHandler}
+                            signIn={this.signInRedirect}
                             price = {this.props.totalPrice}
                         />
                     </>);
@@ -180,6 +191,7 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
     return {
+        isAuthenticated: state.authReducer.token !== null,
         ingredients: state.ingredientsReducer.ingredients,
         totalPrice: state.ingredientsReducer.totalPrice,
         error: state.ingredientsReducer.error
@@ -190,7 +202,9 @@ const mapDispatchToProps = dispatch => {
     return {
         onInitialIngredientsHandler: () => dispatch( burgerBuilderCreators.initialIngredientsHandler()),
         onAddIngredientHandler: (ingredientType) => dispatch( burgerBuilderCreators.addIngredientHandler(ingredientType)),
-        onRemoveIngredientHandler: (ingredientType) => dispatch( burgerBuilderCreators.removeIngredientHandler(ingredientType) )
+        onRemoveIngredientHandler: (ingredientType) => dispatch( burgerBuilderCreators.removeIngredientHandler(ingredientType) ),
+        onInitPurchase: () => dispatch ( contactDataCreators.purchaseInit() ),
+        onSetAuthRedirectPath: (path) => dispatch ( authCreators.setAuthRedirectPath(path) )
     }
 }
 

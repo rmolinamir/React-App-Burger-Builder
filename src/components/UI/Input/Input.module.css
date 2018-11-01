@@ -36,6 +36,22 @@
     box-sizing: border-box;
 }
 
+input.InputElement::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: transparent;
+}
+
+input.InputElement::-moz-placeholder { /* Firefox 19+ */
+    color: transparent;
+}
+
+input.InputElement:-ms-input-placeholder { /* IE 10+ */
+    color: transparent;
+}
+
+input.InputElement:-moz-placeholder { /* Firefox 18- */
+    color: transparent;
+}
+
 .InputElement:focus {
     outline: none;
 }

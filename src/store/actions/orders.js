@@ -3,13 +3,13 @@ import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
 
 export const asyncOrderActions = {
-    setOrdersHandler: (orders) => {
+    getOrdersHandler: (orders) => {
         return {
             type: actionTypes.GET_ORDERS,
             orders: orders
         }
     },
-    setOrdersFailed: () => {
+    getOrdersFailed: () => {
         return {
             type: actionTypes.GET_ORDERS_FAILED,
         }
@@ -17,14 +17,15 @@ export const asyncOrderActions = {
 }
 
 export const ordersCreators = {
-    getOrdersHandler: () => {
+    getOrdersHandler: (token, userId) => {
         return dispatch => {
-            axios.get('/orders.json')
+            const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
+            axios.get('/orders.json' + queryParams)
             .then( response => {
-                dispatch(asyncOrderActions.setOrdersHandler(response.data));
+                dispatch(asyncOrderActions.getOrdersHandler(response.data));
             })
             .catch(error => {
-                dispatch(asyncOrderActions.setOrdersFailed());
+                dispatch(asyncOrderActions.getOrdersFailed());
             });
         }
     }

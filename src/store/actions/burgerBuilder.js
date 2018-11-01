@@ -39,5 +39,10 @@ export const burgerBuilderCreators = {
             type: actionTypes.REMOVE_INGREDIENT,
             ingredientType: ingredientType
         }
+    },
+    resetIngredientsHandler: () => {
+        return {
+            type: actionTypes.RESET_INGREDIENTS
+        }
     }
 }

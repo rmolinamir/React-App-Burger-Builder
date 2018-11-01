@@ -12,6 +12,7 @@ const INGREDIENT_PRICES = {
 const initialState = {
     ingredients: null,
     totalPrice: null,
+    buildingBurger: null,
     error: false
 }
 
@@ -20,10 +21,10 @@ let initialStateBoolean = false;
 const ingredientsReducer = (state = initialState, action) => {
     switch(action.type) {
         case actionTypes.INITIAL_INGREDIENTS_FAILED:
-        return updateObject(state, {error: true});
+            return updateObject(state, {error: true});
         case actionTypes.INITIAL_INGREDIENTS:
             if (initialStateBoolean) {
-                break;
+                return updateObject(state, {buildingBurger: false});
             }
             initialStateBoolean = true;
             let initialPrice = 4;
@@ -37,11 +38,20 @@ const ingredientsReducer = (state = initialState, action) => {
                     cheese: action.initialIngredients.cheese,
                     meat: action.initialIngredients.meat
                 },
-                totalPrice: initialPrice, error: false});
+                totalPrice: initialPrice, buildingBurger: false, error: false});
         case actionTypes.ADD_INGREDIENT:
-            return updateObject(state, {ingredients: { ...state.ingredients, [action.ingredientType]: state.ingredients[action.ingredientType] + 1}, totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientType],});
+            return updateObject(state, {
+                ingredients: { ...state.ingredients, [action.ingredientType]: state.ingredients[action.ingredientType] + 1}, 
+                totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientType], 
+                buildingBurger: true});
         case actionTypes.REMOVE_INGREDIENT:
-            return updateObject(state, {ingredients: { ...state.ingredients, [action.ingredientType]: state.ingredients[action.ingredientType] - 1}, totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientType],});
+            return updateObject(state, {
+                ingredients: { ...state.ingredients, [action.ingredientType]: state.ingredients[action.ingredientType] - 1}, 
+                totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientType], 
+                buildingBurger: true});
+        case actionTypes.RESET_INGREDIENTS:
+            initialStateBoolean = false;
+            break;
         default:
             // do nothing
     }

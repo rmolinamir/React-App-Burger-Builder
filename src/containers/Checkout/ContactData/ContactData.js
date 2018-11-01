@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../../axios-orders';
 
 import Input from '../../../components/UI/Input/Input';
@@ -8,6 +10,10 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 
 import classes from './ContactData.module.css';
 
+import { contactDataCreators } from '../../../store/actions/contactData';
+
+import { checkValidity } from '../../../shared/utility';
+
 class ContactData extends PureComponent {
     state = {
         orderForm: {
@@ -15,7 +21,7 @@ class ContactData extends PureComponent {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    // placeholder: 'Your Name:'
+                    placeholder: 'Your Name:'
                 },
                 value: '',
                 valueType: 'Name',
@@ -29,7 +35,7 @@ class ContactData extends PureComponent {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    // placeholder: 'Street:'
+                    placeholder: 'Street:'
                 },
                 value: '',
                 valueType: 'Address',
@@ -43,7 +49,7 @@ class ContactData extends PureComponent {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    // placeholder: 'ZIP Code:'
+                    placeholder: 'ZIP Code:'
                 },
                 value: '',
                 valueType: 'ZIP Code',
@@ -59,7 +65,7 @@ class ContactData extends PureComponent {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    // placeholder: 'Country:'
+                    placeholder: 'Country:'
                 },
                 value: '',
                 valueType: 'Country',
@@ -73,7 +79,7 @@ class ContactData extends PureComponent {
                 elementType: 'email',
                 elementConfig: {
                     type: 'text',
-                    // placeholder: 'Email:'
+                    placeholder: 'Email:'
                 },
                 value: '',
                 valueType: 'Email',
@@ -100,30 +106,30 @@ class ContactData extends PureComponent {
         },
         formIsValid: false,
         purchasing: false,
-        loading: false
+        // loading: false
     }
 
-    checkValidity = (value, rules) => {
-        let isValid = true;
-        if (rules) {
-            if (rules.required) {
-                isValid = value.trim() !== '' && isValid;
-            }
+    // checkValidity = (value, rules) => {
+    //     let isValid = true;
+    //     if (rules) {
+    //         if (rules.required) {
+    //             isValid = value.trim() !== '' && isValid;
+    //         }
 
-            if (rules.minLength) {
-                isValid = value.length >= rules.minLength && isValid;
-            }
+    //         if (rules.minLength) {
+    //             isValid = value.length >= rules.minLength && isValid;
+    //         }
 
-            if (rules.maxLength) {
-                isValid = value.length <= rules.maxLength && isValid;
-            }
+    //         if (rules.maxLength) {
+    //             isValid = value.length <= rules.maxLength && isValid;
+    //         }
 
-            if (rules.email) {
-                isValid = value.includes('@') && value.includes('.') && isValid;
-            }
-        }
-        return isValid;
-    }
+    //         if (rules.email) {
+    //             isValid = value.includes('@') && value.includes('.') && isValid;
+    //         }
+    //     }
+    //     return isValid;
+    // }
     
     inputChangeHandler = (event, inputIdentifier) => {
         const updatedOrderForm = {
@@ -133,7 +139,7 @@ class ContactData extends PureComponent {
             ...updatedOrderForm[inputIdentifier]
         };
         updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+        updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
         updatedFormElement.touched = true;
         updatedOrderForm[inputIdentifier] = updatedFormElement;
         let formIsValid = true;
@@ -148,9 +154,9 @@ class ContactData extends PureComponent {
 
     orderHandler = (event) => {
         event.preventDefault();
-        this.setState({
-            loading: true,
-        });
+        // this.setState({
+        //     loading: true,
+        // });
         const formData = {};
         for (let formElementIdentifier in this.state.orderForm) {
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
@@ -159,23 +165,27 @@ class ContactData extends PureComponent {
             ingredients: this.props.ingredients,
             // Recalculating price on server side is recommended to avoid theft
             price: Number(this.props.totalPrice).toFixed(2),
-            orderData: formData
-        }
-        axios.post('/orders.json', order)
-        .then(response => {
-            this.setState({
-                purchasing: false,
-                loading: false,
-            });
-            this.props.history.push('/');
+            orderData: formData,
+            userId: this.props.userId
 
-        })
-        .catch(error => {
-            this.setState({
-                purchasing: false,
-                loading: false,
-            });
-        });
+        }
+        this.props.purchaseOrderHandler(order, this.props.token);
+        this.props.history.push('/');
+        // axios.post('/orders.json', order)
+        // .then(response => {
+        //     this.setState({
+        //         purchasing: false,
+        //         loading: false,
+        //     });
+        //     this.props.history.push('/');
+
+        // })
+        // .catch(error => {
+        //     this.setState({
+        //         purchasing: false,
+        //         loading: false,
+        //     });
+        // });
     }
 
     render () {
@@ -212,8 +222,17 @@ class ContactData extends PureComponent {
 const mapStateToProps = state => {
     return {
         ingredients: state.ingredientsReducer.ingredients,
-        totalPrice: state.ingredientsReducer.totalPrice
+        totalPrice: state.ingredientsReducer.totalPrice,
+        loading: state.contactDataReducer.loading,
+        token: state.authReducer.token,
+        userId: state.authReducer.userId
     }
 }
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchToProps = dispatch => {
+    return {
+        purchaseOrderHandler: (order, token) => dispatch( contactDataCreators.purchaseOrderHandler(order, token)  ) 
+    }
+}
+
+export default withErrorHandler(connect(mapStateToProps, mapDispatchToProps)(ContactData), axios);
