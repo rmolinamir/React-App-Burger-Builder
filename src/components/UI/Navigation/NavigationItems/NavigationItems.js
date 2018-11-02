@@ -2,7 +2,7 @@ import React from 'react';
 
 import classes from './NavigationItems.module.css'
 
-import NavigationItem from './NagivationItem/NagivationItem.js';
+import NavigationItem from './NagivationItem/NagivationItem.js'
 
 const nagivationItems = (props) => {
     return (
