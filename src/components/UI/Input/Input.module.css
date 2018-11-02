@@ -26,6 +26,7 @@
 
 .InputElement {
     border:none;
+    border-radius: 0;
     border-bottom:1px solid #757575;
     background-color: #fff;
     font: inherit;
