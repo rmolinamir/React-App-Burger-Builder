@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 
-import axios from '../../axios-orders';
+// import axios from '../../axios-orders';
 
 export const asyncBurgerBuilderActions = {
     setIngredientsHandler: (initialIngredients) => {
@@ -18,14 +18,17 @@ export const asyncBurgerBuilderActions = {
 
 export const burgerBuilderCreators = {
     initialIngredientsHandler: () => {
-        return dispatch => {
-            axios.get('/ingredients.json')
-            .then( response => {
-                dispatch(asyncBurgerBuilderActions.setIngredientsHandler(response.data));
-            })
-            .catch(error => {
-                dispatch(asyncBurgerBuilderActions.setIngredientsFailed());
-            });
+        // return dispatch => {
+        //     axios.get('/ingredients.json')
+        //     .then( response => {
+        //         dispatch(asyncBurgerBuilderActions.setIngredientsHandler(response.data));
+        //     })
+        //     .catch(error => {
+        //         dispatch(asyncBurgerBuilderActions.setIngredientsFailed());
+        //     });
+        // }
+        return {
+            type: actionTypes.GET_INITIAL_INGREDIENTS
         }
     },
     addIngredientHandler: (ingredientType) => {

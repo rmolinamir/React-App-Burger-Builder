@@ -1,8 +1,8 @@
 import * as actionTypes from './actionTypes';
 
-import axios from 'axios';
+// import axios from 'axios';
 
-const parseErrorMessage = (isSignUp, errorCode) => {
+export const parseErrorMessage = (isSignUp, errorCode) => {
     let errorMessage = null;
     if (isSignUp) {
         switch(errorCode) {
@@ -37,6 +37,11 @@ const parseErrorMessage = (isSignUp, errorCode) => {
 }
 
 export const asyncAuthActions = {
+    authStart: () => {
+        return {
+            type: actionTypes.AUTH_START
+        }
+    },
     authSuccess: (idToken, userId) => {
         return {
             type: actionTypes.AUTH_SUCCESS,
@@ -50,19 +55,28 @@ export const asyncAuthActions = {
             error: error
         }
     },
-    logout: () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('expirationDate');
+    authLogout: () => {
+        // localStorage.removeItem('token');
+        // localStorage.removeItem('userId');
+        // localStorage.removeItem('expirationDate');
+        return {
+            type: actionTypes.AUTH_INITIATE_LOGOUT
+        }
+    },
+    authLogoutSucceed: () => {
         return {
             type: actionTypes.AUTH_LOGOUT
         }
     },
     checkAuthTimeout: (expirationTime) => {
-        return dispatch => {
-            setTimeout(() => {
-                dispatch(asyncAuthActions.logout());
-            }, expirationTime * 1000);
+        // return dispatch => {
+        //     setTimeout(() => {
+        //         dispatch(asyncAuthActions.authLogout());
+        //     }, expirationTime * 1000);
+        // }
+        return {
+            type: actionTypes.AUTH_CHECK_TIMEOUT,
+            expirationTime: expirationTime
         }
     },
 }
@@ -74,30 +88,36 @@ export const authCreators = {
         }
     },
     authHandler: (email, password, isSignUp) => {
-        return dispatch => {
-            dispatch(authCreators.authStart());
-            const authData = {
-                email: email,
-                password: password,
-                returnSecureToken: true
-            }
-            let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCx80Ex-IvnkkB1mKhfX-wL8_lKvEePUiQ';
-            if (!isSignUp) {
-                url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCx80Ex-IvnkkB1mKhfX-wL8_lKvEePUiQ'
-            }
-            axios.post(url, authData)
-            .then(response => {
-                const expirationDate =  new Date(new Date().getTime() + response.data.expiresIn * 1000);
-                localStorage.setItem('token', response.data.idToken);
-                localStorage.setItem('userId', response.data.localId);
-                localStorage.setItem('expirationDate', expirationDate);
-                dispatch(asyncAuthActions.authSuccess(response.data.idToken, response.data.localId));
-                dispatch(asyncAuthActions.checkAuthTimeout(response.data.expiresIn));
-            })
-            .catch(error => {
-                let errorMessage = parseErrorMessage(isSignUp, error.response.data.error.message);
-                dispatch(asyncAuthActions.authFail(errorMessage));
-            })
+        // return dispatch => {
+        //     dispatch(authCreators.authStart());
+        //     const authData = {
+        //         email: email,
+        //         password: password,
+        //         returnSecureToken: true
+        //     }
+        //     let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCx80Ex-IvnkkB1mKhfX-wL8_lKvEePUiQ';
+        //     if (!isSignUp) {
+        //         url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCx80Ex-IvnkkB1mKhfX-wL8_lKvEePUiQ'
+        //     }
+        //     axios.post(url, authData)
+        //     .then(response => {
+        //         const expirationDate =  new Date(new Date().getTime() + response.data.expiresIn * 1000);
+        //         localStorage.setItem('token', response.data.idToken);
+        //         localStorage.setItem('userId', response.data.localId);
+        //         localStorage.setItem('expirationDate', expirationDate);
+        //         dispatch(asyncAuthActions.authSuccess(response.data.idToken, response.data.localId));
+        //         dispatch(asyncAuthActions.checkAuthTimeout(response.data.expiresIn));
+        //     })
+        //     .catch(error => {
+        //         let errorMessage = parseErrorMessage(isSignUp, error.response.data.error.message);
+        //         dispatch(asyncAuthActions.authFail(errorMessage));
+        //     })
+        // }
+        return {
+            type: actionTypes.AUTH_USER,
+            email: email,
+            password: password,
+            isSignUp: isSignUp
         }
     },
     setAuthRedirectPath: (path) => {
@@ -107,19 +127,22 @@ export const authCreators = {
         }
     },
     authCheckState: () => {
-        return dispatch => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                dispatch(asyncAuthActions.logout());
-            } else {
-                const userId = localStorage.getItem('userId');
-                const expirationDate = new Date(localStorage.getItem('expirationDate'));
-                if (expirationDate <= new Date()) {
-                    dispatch(asyncAuthActions.logout());
-                }
-                dispatch(asyncAuthActions.authSuccess(token, userId));
-                dispatch(asyncAuthActions.checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
-            }
+        // return dispatch => {
+        //     const token = localStorage.getItem('token');
+        //     if (!token) {
+        //         dispatch(asyncAuthActions.authLogout());
+        //     } else {
+        //         const userId = localStorage.getItem('userId');
+        //         const expirationDate = new Date(localStorage.getItem('expirationDate'));
+        //         if (expirationDate <= new Date()) {
+        //             dispatch(asyncAuthActions.authLogout());
+        //         }
+        //         dispatch(asyncAuthActions.authSuccess(token, userId));
+        //         dispatch(asyncAuthActions.checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
+        //     }
+        // }
+        return {
+            type: actionTypes.AUTH_CHECK_STATE
         }
     }
 }

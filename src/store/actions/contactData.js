@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 
-import axios from '../../axios-orders';
+// import axios from '../../axios-orders';
 
 export const asyncPurchaseActions = {
     successPurchaseOrderHandler: (id, orderData) => {
@@ -35,16 +35,21 @@ export const contactDataCreators = {
         }
     },
     purchaseOrderHandler: (order, token) => {
-        return dispatch => {
-            dispatch( contactDataCreators.purchaseOrderStart() );
-            axios.post('/orders.json?auth=' + token, order)
-            .then( response => {
-                dispatch(asyncPurchaseActions.resetIngredients());
-                dispatch(asyncPurchaseActions.successPurchaseOrderHandler(response.data.name, order));
-            })
-            .catch(error => {
-                dispatch(asyncPurchaseActions.failedPurchaseOrderHandler(error));
-            });
+        // return dispatch => {
+        //     dispatch( contactDataCreators.purchaseOrderStart() );
+        //     axios.post('/orders.json?auth=' + token, order)
+        //     .then( response => {
+        //         dispatch(asyncPurchaseActions.resetIngredients());
+        //         dispatch(asyncPurchaseActions.successPurchaseOrderHandler(response.data.name, order));
+        //     })
+        //     .catch(error => {
+        //         dispatch(asyncPurchaseActions.failedPurchaseOrderHandler(error));
+        //     });
+        // }
+        return {
+            type: actionTypes.PURCHASE_HANDLER,
+            order: order,
+            token: token
         }
     }
 }

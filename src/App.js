@@ -24,7 +24,17 @@ class App extends Component {
   }
 
   render() {
-  
+    const errorPage = (
+      <h1 
+      style={
+        {
+          display: 'flex', 
+          alignItems: 'center', 
+          height: '75vh', 
+          width: '70vw', 
+          textAlign: 'center', 
+          margin: 'auto'}}>Error 404 Not Found. The client was able to communicate with the server, but the server could not find what was requested.</h1>
+    );
     let routes;
     if (this.props.isAuthenticated) {
       routes = (
@@ -34,18 +44,9 @@ class App extends Component {
             <Route path="/logout" component={Logout}/>
             {/* <Route path="/checkout" component={Checkout}/> */}
             <Route path="/checkout" render={() => <Suspense fallback={<Spinner />}><Checkout /></Suspense>}/>
-            <Route path="/checkout" render={() => <Suspense fallback={<Spinner />}><Orders /></Suspense>}/>
+            <Route path="/orders" render={() => <Suspense fallback={<Spinner />}><Orders /></Suspense>}/>
             <Route path="/" exact component={BurgerBuilder}/>
-            <Route render={() => 
-              <h1 
-                style={
-                  {
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    height: '75vh', 
-                    width: '70vw', 
-                    textAlign: 'center', 
-                    margin: 'auto'}}>Error 404 Not Found. The client was able to communicate with the server, but the server could not find what was requested.</h1>}/>
+            <Route render={() => errorPage}/>
           </Switch>
         )
     } else {
@@ -54,16 +55,7 @@ class App extends Component {
           <Route path="/login" render={() => <Suspense fallback={<Spinner />}><Auth /></Suspense>}/>
           <Route path="/logout" component={Logout}/>
           <Route path="/" exact component={BurgerBuilder}/>
-          <Route render={() => 
-            <h1 
-              style={
-                {
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  height: '75vh', 
-                  width: '70vw', 
-                  textAlign: 'center', 
-                  margin: 'auto'}}>Error 404 Not Found. The client was able to communicate with the server, but the server could not find what was requested.</h1>}/>
+          <Route render={() => errorPage}/>
         </Switch>
       )
     }

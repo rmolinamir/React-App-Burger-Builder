@@ -24,7 +24,7 @@ class Logout extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLogout: () => dispatch(asyncAuthActions.logout())
+        onLogout: () => dispatch(asyncAuthActions.authLogout())
     }
 }
 

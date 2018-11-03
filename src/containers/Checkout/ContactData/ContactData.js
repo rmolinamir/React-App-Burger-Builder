@@ -170,7 +170,6 @@ class ContactData extends PureComponent {
 
         }
         this.props.purchaseOrderHandler(order, this.props.token);
-        this.props.history.push('/');
         // axios.post('/orders.json', order)
         // .then(response => {
         //     this.setState({
@@ -186,6 +185,7 @@ class ContactData extends PureComponent {
         //         loading: false,
         //     });
         // });
+        // this.props.history.push('/');
     }
 
     render () {
