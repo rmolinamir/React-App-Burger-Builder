@@ -14,11 +14,10 @@ import { asyncAuthActions, parseErrorMessage } from '../actions/auth';
 // }
 
 export const authSagas = {
-    logoutSaga: function* (action) {
-        yield call([localStorage, 'removeItem', 'token']);
-        // yield localStorage.removeItem('token');
-        yield localStorage.removeItem('userId');
-        yield localStorage.removeItem('expirationDate');
+    logoutSaga: function* () {
+        yield call([localStorage, 'removeItem'], 'token');  
+        yield call([localStorage, 'removeItem'], 'userId');  
+        yield call([localStorage, 'removeItem'], 'expirationDate');
         yield put(asyncAuthActions.authLogoutSucceed());
     },
     checkAuthTimeoutSaga: function* (action) {

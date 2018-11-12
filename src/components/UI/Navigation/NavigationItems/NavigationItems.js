@@ -7,6 +7,9 @@ import NavigationItem from './NagivationItem/NagivationItem.js';
 const nagivationItems = (props) => {
     return (
         <ul className={classes.NavigationItems}>
+            <NavigationItem link='/github' exact>Github Profile</NavigationItem>
+            <NavigationItem link='/linkedin' exact>Linked In Profile</NavigationItem>
+            <NavigationItem link='/rmolinamir' exact>Robert Molina</NavigationItem>
             <NavigationItem link='/' exact>Burger Builder</NavigationItem>
             {props.isAuthenticated ? 
                 <NavigationItem link='/orders'>Orders</NavigationItem> : 

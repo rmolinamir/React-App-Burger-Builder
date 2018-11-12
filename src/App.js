@@ -24,6 +24,13 @@ class App extends Component {
   }
 
   render() {
+    const redirects = (
+      <>
+        <Route exact path="/github" component={() => window.location = 'https://github.com/rmolinamir'} />
+        <Route exact path="/linkedin" component={() => window.location = 'https://www.linkedin.com/in/rmolinamir'} />
+        <Route exact path="/rmolinamir" component={() => window.location = 'https://robertmolinamir.firebaseapp.com'} />
+      </>
+    )
     const errorPage = (
       <h1 
       style={
@@ -39,6 +46,7 @@ class App extends Component {
     if (this.props.isAuthenticated) {
       routes = (
         <Switch>
+            {redirects}
             {/* <Route path="/login" component={Auth}/> */}
             <Route path="/login" render={() => <Suspense fallback={<Spinner />}><Auth /></Suspense>}/>
             <Route path="/logout" component={Logout}/>
@@ -52,6 +60,7 @@ class App extends Component {
     } else {
       routes = (
         <Switch>
+          {redirects}
           <Route path="/login" render={() => <Suspense fallback={<Spinner />}><Auth /></Suspense>}/>
           <Route path="/logout" component={Logout}/>
           <Route path="/" exact component={BurgerBuilder}/>
