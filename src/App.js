@@ -26,9 +26,9 @@ class App extends Component {
   render() {
     const redirects = (
       <>
-        <Route exact path="/github" component={() => window.location = 'https://github.com/rmolinamir'} />
-        <Route exact path="/linkedin" component={() => window.location = 'https://www.linkedin.com/in/rmolinamir'} />
-        <Route exact path="/rmolinamir" component={() => window.location = 'https://robertmolinamir.firebaseapp.com'} />
+        <Route path="/github" component={() => window.location = 'https://github.com/rmolinamir'} />
+        <Route path="/linkedin" component={() => window.location = 'https://www.linkedin.com/in/rmolinamir'} />
+        <Route path="/rmolinamir" component={() => window.location = 'https://robertmolinamir.firebaseapp.com'} />
       </>
     )
     const errorPage = (
@@ -46,7 +46,6 @@ class App extends Component {
     if (this.props.isAuthenticated) {
       routes = (
         <Switch>
-            {redirects}
             {/* <Route path="/login" component={Auth}/> */}
             <Route path="/login" render={() => <Suspense fallback={<Spinner />}><Auth /></Suspense>}/>
             <Route path="/logout" component={Logout}/>
@@ -54,16 +53,17 @@ class App extends Component {
             <Route path="/checkout" render={() => <Suspense fallback={<Spinner />}><Checkout /></Suspense>}/>
             <Route path="/orders" render={() => <Suspense fallback={<Spinner />}><Orders /></Suspense>}/>
             <Route path="/" exact component={BurgerBuilder}/>
+            {redirects}
             <Route render={() => errorPage}/>
           </Switch>
         )
     } else {
       routes = (
         <Switch>
-          {redirects}
           <Route path="/login" render={() => <Suspense fallback={<Spinner />}><Auth /></Suspense>}/>
           <Route path="/logout" component={Logout}/>
           <Route path="/" exact component={BurgerBuilder}/>
+          {redirects}
           <Route render={() => errorPage}/>
         </Switch>
       )
